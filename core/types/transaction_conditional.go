@@ -140,24 +140,26 @@ var ErrEmptyKnownAccounts = errors.New("knownAccounts cannot be nil")
 var ErrKnownAccounts = errors.New("an incorrect list of knownAccounts")
 
 func (ka KnownAccounts) ValidateLength() error {
-	if ka == nil {
-		return ErrEmptyKnownAccounts
-	}
-
-	length := 0
-
-	for _, v := range ka {
-		// check if the value is hex string or an object
-		if v.IsSingle() {
-			length += 1
-		} else {
-			length += len(v.Storage)
-		}
-	}
-
-	if length >= 1000 {
-		return fmt.Errorf("number of slots/accounts in KnownAccounts %v exceeds the limit of 1000", length)
-	}
-
 	return nil
+
+	// if ka == nil {
+	// 	return ErrEmptyKnownAccounts
+	// }
+
+	// length := 0
+
+	// for _, v := range ka {
+	// 	// check if the value is hex string or an object
+	// 	if v.IsSingle() {
+	// 		length += 1
+	// 	} else {
+	// 		length += len(v.Storage)
+	// 	}
+	// }
+
+	// if length >= 1000 {
+	// 	return fmt.Errorf("number of slots/accounts in KnownAccounts %v exceeds the limit of 1000", length)
+	// }
+
+	// return nil
 }
