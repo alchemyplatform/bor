@@ -1091,22 +1091,24 @@ mainloop:
 
 		//nolint:nestif
 		if options := tx.GetOptions(); options != nil {
+			fmt.Println("PSP - in commitTransactions", tx.Hash())
+
 			if err := env.header.ValidateBlockNumberOptions4337(options.BlockNumberMin, options.BlockNumberMax); err != nil {
-				log.Trace("Dropping conditional transaction from", from, "with hash", tx.Hash(), "reason", err)
+				fmt.Println("PSP - Dropping conditional transaction from", from, "with hash", tx.Hash(), "reason", err)
 				txs.Pop()
 
 				continue
 			}
 
 			if err := env.header.ValidateTimestampOptions4337(options.TimestampMin, options.TimestampMax); err != nil {
-				log.Trace("Dropping conditional transaction from", from, "with hash", tx.Hash(), "reason", err)
+				fmt.Println("PSP - Dropping conditional transaction from", from, "with hash", tx.Hash(), "reason", err)
 				txs.Pop()
 
 				continue
 			}
 
 			if err := env.state.ValidateKnownAccounts(options.KnownAccounts); err != nil {
-				log.Trace("Dropping conditional transaction from", from, "with hash", tx.Hash(), "reason", err)
+				fmt.Println("PSP - Dropping conditional transaction from", from, "with hash", tx.Hash(), "reason", err)
 				txs.Pop()
 
 				continue

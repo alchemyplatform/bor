@@ -1996,6 +1996,16 @@ func (s *PublicTransactionPoolAPI) SendRawTransaction(ctx context.Context, input
 // SendRawTransactionConditional will add the signed transaction to the transaction pool.
 // The sender/bundler is responsible for signing the transaction
 func (s *PublicTransactionPoolAPI) SendRawTransactionConditional(ctx context.Context, input hexutil.Bytes, options types.OptionsAA4337) (common.Hash, error) {
+
+	fmt.Println("PSP - in SendRawTransactionConditional")
+
+	fmt.Println("PSP - options", options)
+	fmt.Println("PSP - BlockNumberMin", options.BlockNumberMin)
+	fmt.Println("PSP - BlockNumberMax", options.BlockNumberMax)
+	fmt.Println("PSP - TimestampMin", options.TimestampMin)
+	fmt.Println("PSP - TimestampMax", options.TimestampMax)
+	fmt.Println("PSP - KnownAccounts", options.KnownAccounts)
+
 	tx := new(types.Transaction)
 	if err := tx.UnmarshalBinary(input); err != nil {
 		return common.Hash{}, err
@@ -2009,23 +2019,33 @@ func (s *PublicTransactionPoolAPI) SendRawTransactionConditional(ctx context.Con
 		return common.Hash{}, &rpc.OptionsValidateError{Message: "out of block range. err: " + err.Error()}
 	}
 
+	fmt.Println("PSP - Block Number validation done")
+
 	// check timestamp range
 	if err := currentHeader.ValidateTimestampOptions4337(options.TimestampMin, options.TimestampMax); err != nil {
 		return common.Hash{}, &rpc.OptionsValidateError{Message: "out of time range. err: " + err.Error()}
 	}
+
+	fmt.Println("PSP - Time Stamp validation done")
 
 	// check knownAccounts length (number of slots/accounts) should be less than 1000
 	if err := options.KnownAccounts.ValidateLength(); err != nil {
 		return common.Hash{}, &rpc.KnownAccountsLimitExceededError{Message: "limit exceeded. err: " + err.Error()}
 	}
 
+	fmt.Println("PSP - Length validation done")
+
 	// check knownAccounts
 	if err := currentState.ValidateKnownAccounts(options.KnownAccounts); err != nil {
 		return common.Hash{}, &rpc.OptionsValidateError{Message: "storage error. err: " + err.Error()}
 	}
 
+	fmt.Println("PSP - Known Accounts validation done")
+
 	// put options data in Tx, to use it later while block building
 	tx.PutOptions(&options)
+
+	fmt.Println("PSP - set options in tx")
 
 	return SubmitTransaction(ctx, s.b, tx)
 }
