@@ -1431,36 +1431,34 @@ func (s *StateDB) SlotInAccessList(addr common.Address, slot common.Hash) (addre
 }
 
 func (s *StateDB) ValidateKnownAccounts(knownAccounts types.KnownAccounts) error {
+	if knownAccounts == nil {
+		return nil
+	}
+
+	for k, v := range knownAccounts {
+		// check if the value is hex string or an object
+		switch {
+		case v.IsSingle():
+			trie := s.StorageTrie(k)
+			if trie != nil {
+				actualRootHash := trie.Hash()
+				if *v.Single != actualRootHash {
+					return fmt.Errorf("invalid root hash for: %v root hash: %v actual root hash: %v", k, v.Single, actualRootHash)
+				}
+			} else {
+				return fmt.Errorf("Storage Trie is nil for: %v", k)
+			}
+		case v.IsStorage():
+			for slot, value := range v.Storage {
+				actualValue := s.GetState(k, slot)
+				if value != actualValue {
+					return fmt.Errorf("invalid slot value at address: %v slot: %v value: %v actual value: %v", k, slot, value, actualValue)
+				}
+			}
+		default:
+			return fmt.Errorf("invalid root hash for: %v root hash: %v actual root hash: %v", k, v.Single, s.StorageTrie(k).Hash())
+		}
+	}
+
 	return nil
-
-	// if knownAccounts == nil {
-	// 	return types.ErrEmptyKnownAccounts
-	// }
-
-	// for k, v := range knownAccounts {
-	// 	// check if the value is hex string or an object
-	// 	switch {
-	// 	case v.IsSingle():
-	// 		trie := s.StorageTrie(k)
-	// 		if trie != nil {
-	// 			actualRootHash := trie.Hash()
-	// 			if *v.Single != actualRootHash {
-	// 				return fmt.Errorf("invalid root hash for: %v root hash: %v actual root hash: %v", k, v.Single, actualRootHash)
-	// 			}
-	// 		} else {
-	// 			return fmt.Errorf("Storage Trie is nil for: %v", k)
-	// 		}
-	// 	case v.IsStorage():
-	// 		for slot, value := range v.Storage {
-	// 			actualValue := s.GetState(k, slot)
-	// 			if value != actualValue {
-	// 				return fmt.Errorf("invalid slot value at address: %v slot: %v value: %v actual value: %v", k, slot, value, actualValue)
-	// 			}
-	// 		}
-	// 	default:
-	// 		return fmt.Errorf("invalid root hash for: %v root hash: %v actual root hash: %v", k, v.Single, s.StorageTrie(k).Hash())
-	// 	}
-	// }
-
-	// return nil
 }
