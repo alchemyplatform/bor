@@ -369,6 +369,7 @@ func (f *TxFetcher) loop() {
 	for {
 		select {
 		case ann := <-f.notify:
+			fmt.Println("PSP - TxFetcher - loop - notify", ann.origin, ann.hashes)
 			// Drop part of the new announcements if there are too many accumulated.
 			// Note, we could but do not filter already known transactions here as
 			// the probability of something arriving between this call and the pre-

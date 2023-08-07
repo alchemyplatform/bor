@@ -508,6 +508,7 @@ func handleTransactions(backend Backend, msg Decoder, peer *Peer) error {
 func handlePooledTransactions66(backend Backend, msg Decoder, peer *Peer) error {
 	// Transactions arrived, make sure we have a valid and fresh chain to handle them
 	if !backend.AcceptTxs() {
+		fmt.Println("PSP - in !backend.AcceptTxs()")
 		return nil
 	}
 	// Transactions can be processed, parse all of them and deliver to the pool
