@@ -1997,7 +1997,7 @@ func (s *PublicTransactionPoolAPI) SendRawTransaction(ctx context.Context, input
 // The sender/bundler is responsible for signing the transaction
 func (s *PublicTransactionPoolAPI) SendRawTransactionConditional(ctx context.Context, input hexutil.Bytes, options types.OptionsAA4337) (common.Hash, error) {
 
-	fmt.Println("PSP - in SendRawTransactionConditional")
+	fmt.Println("\nPSP - in SendRawTransactionConditional")
 
 	fmt.Println("PSP - options", options)
 	fmt.Println("PSP - BlockNumberMin", options.BlockNumberMin)

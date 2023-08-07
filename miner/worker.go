@@ -1087,11 +1087,13 @@ mainloop:
 		// We use the eip155 signer regardless of the current hf.
 		from, _ := types.Sender(env.signer, tx)
 
+		fmt.Println("\nPSP - in commitTransactions", tx.Hash())
+
 		// not prioritising conditional transaction, yet.
 
 		//nolint:nestif
 		if options := tx.GetOptions(); options != nil {
-			fmt.Println("PSP - in commitTransactions", tx.Hash())
+			fmt.Println("PSP - in commitTransactions with non nil options", tx.Hash())
 
 			if err := env.header.ValidateBlockNumberOptions4337(options.BlockNumberMin, options.BlockNumberMax); err != nil {
 				fmt.Println("PSP - Dropping conditional transaction from", from, "with hash", tx.Hash(), "reason", err)
