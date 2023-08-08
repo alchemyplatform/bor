@@ -17,6 +17,7 @@
 package eth
 
 import (
+	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -147,7 +148,13 @@ func (p *Peer) announceTransactions() {
 				size    common.StorageSize
 			)
 			for count = 0; count < len(queue) && size < maxTxPacketSize; count++ {
-				if p.txpool.Get(queue[count]) != nil {
+				tempTx := p.txpool.Get(queue[count])
+				if tempTx.GetOptions() != nil {
+					fmt.Println("PSP - tempTx.GetOptions() == nil", queue[count])
+				}
+
+				// do not announce transactions that have non nil options (EIP-4337 bundled transactions)
+				if tempTx != nil && tempTx.GetOptions() == nil {
 					pending = append(pending, queue[count])
 					size += common.HashLength
 				}
