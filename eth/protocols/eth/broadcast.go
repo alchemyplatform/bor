@@ -149,12 +149,14 @@ func (p *Peer) announceTransactions() {
 			)
 			for count = 0; count < len(queue) && size < maxTxPacketSize; count++ {
 				tempTx := p.txpool.Get(queue[count])
+				fmt.Println("PSP - tempTx", tempTx, tempTx.GetOptions())
 				if tempTx.GetOptions() != nil {
 					fmt.Println("PSP - tempTx.GetOptions() == nil", queue[count])
 				}
 
 				// do not announce transactions that have non nil options (EIP-4337 bundled transactions)
 				if tempTx != nil && tempTx.GetOptions() == nil {
+					fmt.Println("PSP - appending transaction to pending", queue[count])
 					pending = append(pending, queue[count])
 					size += common.HashLength
 				}
