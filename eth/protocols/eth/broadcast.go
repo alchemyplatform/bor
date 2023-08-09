@@ -17,6 +17,7 @@
 package eth
 
 import (
+	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -85,6 +86,13 @@ func (p *Peer) broadcastTransactions() {
 
 			for i := 0; i < len(queue) && size < maxTxPacketSize; i++ {
 				tx := p.txpool.Get(queue[i])
+
+				fmt.Println("PSP - in broadcastTransactions")
+				fmt.Println("PSP - tempTx", tx)
+				fmt.Println("PSP - options", tx.GetOptions() == nil, tx.GetOptions())
+				if tx.GetOptions() != nil {
+					fmt.Println("PSP - tx will not be brodcasted", queue[i])
+				}
 
 				// Skip EIP-4337 bundled transactions
 				if tx != nil && tx.GetOptions() == nil {
@@ -162,6 +170,13 @@ func (p *Peer) announceTransactions() {
 
 			for count = 0; count < len(queue) && size < maxTxPacketSize; count++ {
 				tx := p.txpool.Get(queue[count])
+
+				fmt.Println("PSP - in announceTransactions")
+				fmt.Println("PSP - tempTx", tx)
+				fmt.Println("PSP - options", tx.GetOptions() == nil, tx.GetOptions())
+				if tx.GetOptions() != nil {
+					fmt.Println("PSP - tx will not be announced", queue[count])
+				}
 
 				// Skip EIP-4337 bundled transactions
 				if tx != nil && tx.GetOptions() == nil {

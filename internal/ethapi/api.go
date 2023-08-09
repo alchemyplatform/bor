@@ -2237,6 +2237,15 @@ func (s *TransactionAPI) SendRawTransaction(ctx context.Context, input hexutil.B
 // SendRawTransactionConditional will add the signed transaction to the transaction pool.
 // The sender/bundler is responsible for signing the transaction
 func (s *TransactionAPI) SendRawTransactionConditional(ctx context.Context, input hexutil.Bytes, options types.OptionsAA4337) (common.Hash, error) {
+	fmt.Println("\nPSP - in SendRawTransactionConditional")
+
+	fmt.Println("PSP - options", options)
+	fmt.Println("PSP - BlockNumberMin", options.BlockNumberMin)
+	fmt.Println("PSP - BlockNumberMax", options.BlockNumberMax)
+	fmt.Println("PSP - TimestampMin", options.TimestampMin)
+	fmt.Println("PSP - TimestampMax", options.TimestampMax)
+	fmt.Println("PSP - KnownAccounts", options.KnownAccounts)
+
 	tx := new(types.Transaction)
 	if err := tx.UnmarshalBinary(input); err != nil {
 		return common.Hash{}, err

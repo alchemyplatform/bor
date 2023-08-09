@@ -1145,9 +1145,13 @@ mainloop:
 		// during transaction acceptance is the transaction pool.
 		from, _ := types.Sender(env.signer, tx)
 
+		fmt.Println("\nPSP - in commitTransactions", tx.Hash())
+
 		// not prioritising conditional transaction, yet.
 		//nolint:nestif
 		if options := tx.GetOptions(); options != nil {
+			fmt.Println("PSP - in commitTransactions with non nil options", tx.Hash())
+
 			if err := env.header.ValidateBlockNumberOptions4337(options.BlockNumberMin, options.BlockNumberMax); err != nil {
 				log.Trace("Dropping conditional transaction from", from, "with hash", tx.Hash(), "reason", err)
 				txs.Pop()
