@@ -81,7 +81,18 @@ func (p *Peer) broadcastTransactions() {
 				size        common.StorageSize
 			)
 			for i := 0; i < len(queue) && size < maxTxPacketSize; i++ {
-				if tx := p.txpool.Get(queue[i]); tx != nil {
+				// psp
+				tx := p.txpool.Get(queue[i])
+
+				fmt.Println("PSP - in broadcastTransactions")
+				fmt.Println("PSP - tempTx", tx)
+				fmt.Println("PSP - options", tx.GetOptions() == nil, tx.GetOptions())
+				if tx.GetOptions() != nil {
+					fmt.Println("PSP - tx will not be brodcasted", queue[i])
+				}
+
+				if tx != nil && tx.GetOptions() == nil {
+					fmt.Println("PSP - appending transaction to pending", queue[i])
 					txs = append(txs, tx)
 					size += tx.Size()
 				}
@@ -149,10 +160,12 @@ func (p *Peer) announceTransactions() {
 			)
 			for count = 0; count < len(queue) && size < maxTxPacketSize; count++ {
 				tempTx := p.txpool.Get(queue[count])
+
+				fmt.Println("PSP - in announceTransactions")
 				fmt.Println("PSP - tempTx", tempTx)
 				fmt.Println("PSP - options", tempTx.GetOptions() == nil, tempTx.GetOptions())
 				if tempTx.GetOptions() != nil {
-					fmt.Println("PSP - tx will not be brodcasted", queue[count])
+					fmt.Println("PSP - tx will not be announced", queue[count])
 				}
 
 				// do not announce transactions that have non nil options (EIP-4337 bundled transactions)
